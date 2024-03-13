@@ -1,35 +1,58 @@
 import * as echarts from "echarts";
 import ReactEcharts from "echarts-for-react";
+import { useEffect, useState } from "react";
+import "./style.css";
 
 type EChartsOption = echarts.EChartsOption;
+type DataApi = {
+  degree_days: number;
+  ndvi: number;
+  precipitation: number;
+  time: number;
+};
 
 const GrowthStage = () => {
-  const colors = ["#5470C6", "#91CC75", "#EE6666"];
+  const [data, setData] = useState<DataApi[]>([]);
+
+  useEffect(() => {
+    fetch(
+      "https://raw.githubusercontent.com/alexanderboliva/test/main/api_example.json"
+    )
+      .then((r) => r.json())
+      .then((json) => {
+        setData(json);
+      });
+  }, []);
+
+  const dateConvert = (ele: number) => {
+    const formatted: Intl.DateTimeFormatOptions = {
+      day: "numeric",
+      month: "2-digit",
+    };
+    const time = new Date(ele * 1000).toLocaleDateString("pt-BR", formatted);
+    return time;
+  };
 
   const option: EChartsOption = {
-    color: colors,
-
     tooltip: {
       trigger: "axis",
       axisPointer: {
-        type: "cross",
+        type: "shadow",
+        label: {
+          align: "center",
+        },
       },
     },
     grid: {
-      right: "20%",
-    },
-    toolbox: {
-      feature: {
-        dataView: { show: true, readOnly: false },
-        restore: { show: true },
-        saveAsImage: { show: true },
-      },
+      left: "5%",
+      top: "25%",
+      right: "5%",
     },
     legend: {
-      data: ["Accum Rainfall", "NDVI", "Degree Days"],
+      data: ["Accum Rainfall", "Degree Days", "NDVI"],
       orient: "vertical",
       icon: "circle",
-      left: 10,
+      left: 1,
       textStyle: {
         color: "#fff",
       },
@@ -40,21 +63,7 @@ const GrowthStage = () => {
         axisTick: {
           alignWithLabel: true,
         },
-        data: [
-          //dias do mesmo mes e não meses do ano***
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ],
+        data: data.map((ele) => dateConvert(ele.time)),
       },
     ],
     yAxis: [
@@ -64,31 +73,23 @@ const GrowthStage = () => {
         position: "left",
         alignTicks: true,
         axisLine: {
-          show: true,
+          show: false,
           lineStyle: {
             color: "#FFF",
           },
         },
         axisLabel: {
-          formatter: "{value} ml",
+          formatter: "{value} mm",
         },
       },
       {
         type: "value",
         name: "NDVI",
-        // position: "top",
-        // alignTicks: true,
-        // offset: 80,
+        position: "top",
         show: false,
         axisLine: {
-          show: false,
-          // lineStyle: {
-          //   color: colors[1],
-          // },
+          show: true,
         },
-        // axisLabel: {
-        //   formatter: "{value} ml",
-        // },
       },
       {
         type: "value",
@@ -96,7 +97,7 @@ const GrowthStage = () => {
         position: "right",
         alignTicks: true,
         axisLine: {
-          show: true,
+          show: false,
           lineStyle: {
             color: "#FFF",
           },
@@ -104,6 +105,14 @@ const GrowthStage = () => {
         axisLabel: {
           formatter: "{value} °C",
         },
+      },
+    ],
+    dataZoom: [
+      {
+        startValue: "2014-06-01",
+      },
+      {
+        type: "inside",
       },
     ],
     series: [
@@ -126,14 +135,12 @@ const GrowthStage = () => {
             ]),
           },
         },
-        data: [
-          2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3,
-        ],
+        data: data.map((dt) => dt.precipitation),
       },
       {
         name: "NDVI",
         type: "line",
-        stack: "Total",
+        yAxisIndex: 1,
         smooth: true,
         color: "#91CC75",
         lineStyle: {
@@ -158,7 +165,7 @@ const GrowthStage = () => {
         emphasis: {
           focus: "series",
         },
-        data: [40, 32, 50, 164, 90, 140, 250, 100, 90, 40, 20, 12],
+        data: data.map((dt) => dt.ndvi),
       },
       {
         name: "Degree Days",
@@ -167,12 +174,11 @@ const GrowthStage = () => {
         showSymbol: false,
         yAxisIndex: 2,
         color: "#fe7800",
-        data: [
-          2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2,
-        ],
+        data: data.map((dt) => dt.degree_days),
       },
     ],
   };
+
   return (
     <div
       className="teste"
@@ -183,37 +189,9 @@ const GrowthStage = () => {
         padding: "15px",
       }}
     >
-      <ReactEcharts option={option} />
+      <ReactEcharts option={option} style={{ height: "500px" }} />
     </div>
   );
 };
 
 export default GrowthStage;
-
-// const chartDom = document.getElementById("main")!;
-//   const myChart = echarts.init(chartDom);
-
-//   const yMax = 500;
-//   const dataShadow: number[] = [];
-
-//   const zoomSize = 6;
-//   myChart.on("click", function (params) {
-//     console.log(dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)]);
-//     myChart.dispatchAction({
-//       type: "dataZoom",
-//       startValue: dataAxis[Math.max(params.dataIndex - zoomSize / 2, 0)],
-//       endValue:
-//         dataAxis[Math.min(params.dataIndex + zoomSize / 2, data.length - 1)],
-//     });
-//   });
-
-//   option && myChart.setOption(option);
-
-//   function fnGraphic() {
-//     for (let i = 0; i < data.length; i++) {
-//       dataShadow.push(yMax);
-//     }
-//     return dataShadow;
-//   }
-
-//   return { fnGraphic };
