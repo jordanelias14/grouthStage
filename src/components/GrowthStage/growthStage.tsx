@@ -29,6 +29,7 @@ const GrowthStage = () => {
       day: "numeric",
       month: "2-digit",
     };
+
     const time = new Date(ele * 1000).toLocaleDateString("pt-BR", formatted);
     return time;
   };
@@ -53,6 +54,7 @@ const GrowthStage = () => {
       orient: "vertical",
       icon: "circle",
       left: 1,
+      align: "left",
       textStyle: {
         color: "#fff",
       },
@@ -183,13 +185,13 @@ const GrowthStage = () => {
     <div
       className="teste"
       style={{
-        border: "2px solid",
-        borderColor: "#FE7800",
-        borderRadius: "20px",
-        padding: "15px",
+        width: "100%",
       }}
     >
-      <ReactEcharts option={option} style={{ height: "500px" }} />
+      <ReactEcharts
+        option={option}
+        style={{ height: "500px", padding: "5px" }}
+      />
     </div>
   );
 };

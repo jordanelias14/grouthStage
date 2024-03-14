@@ -1,43 +1,77 @@
 #root {
-  max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
   width: 100vw;
+  height: 100vh;
+  background-color: #05101d;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.home-container {
+  display: flex;
+  justify-content: space-between;
+  height: 100vh;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.left-container {
+  display: flex;
+  width: 30%;
+  background: rgb(0, 119, 128);
+  border-radius: 0 50px 50px 0;
+}
+
+.left-line {
+  position: absolute;
+  display: flex;
+  border-radius: 0 50px 50px 0;
+  width: 27%;
+  top: 5vh;
+  height: 90vh;
+
+  animation: apearsLine ease 2s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes apearsLine {
+  20% {
+    border-top: 4px solid #05101d;
+    opacity: 0.1;
   }
-  to {
-    transform: rotate(360deg);
+  55% {
+    border-right: 4px solid #05101d;
+    opacity: 0.6;
+  }
+  100% {
+    border-top: 4px solid #05101d;
+    border-right: 4px solid #05101d;
+    border-bottom: 4px solid #05101d;
+    opacity: 1;
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.title {
+  display: flex;
+  width: 90%;
+  margin-top: 30px;
+  flex-direction: column;
+  align-items: center;
+
+  animation: fadeInAnimation ease 3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fadeInAnimation {
+  0% {
+    opacity: 0.1;
+  }
+  100% {
+    opacity: 1;
   }
 }
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+.right-container {
+  display: flex;
+  width: 68%;
+  align-items: center;
 }
