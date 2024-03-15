@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import "./style.css";
 
 type EChartsOption = echarts.EChartsOption;
+
 type DataApi = {
   degree_days: number;
   ndvi: number;
@@ -11,13 +12,14 @@ type DataApi = {
   time: number;
 };
 
+const urlApi: string =
+  "https://raw.githubusercontent.com/alexanderboliva/test/main/api_example.json";
+
 const GrowthStage = () => {
   const [data, setData] = useState<DataApi[]>([]);
 
   useEffect(() => {
-    fetch(
-      "https://raw.githubusercontent.com/alexanderboliva/test/main/api_example.json"
-    )
+    fetch(urlApi)
       .then((r) => r.json())
       .then((json) => {
         setData(json);
@@ -65,7 +67,7 @@ const GrowthStage = () => {
         axisTick: {
           alignWithLabel: true,
         },
-        data: data.map((ele) => dateConvert(ele.time)),
+        data: data.map((dt: DataApi) => dateConvert(dt.time)),
       },
     ],
     yAxis: [
@@ -137,7 +139,7 @@ const GrowthStage = () => {
             ]),
           },
         },
-        data: data.map((dt) => dt.precipitation),
+        data: data.map((dt: DataApi) => dt.precipitation),
       },
       {
         name: "NDVI",
@@ -167,7 +169,7 @@ const GrowthStage = () => {
         emphasis: {
           focus: "series",
         },
-        data: data.map((dt) => dt.ndvi),
+        data: data.map((dt: DataApi) => dt.ndvi),
       },
       {
         name: "Degree Days",
@@ -176,21 +178,19 @@ const GrowthStage = () => {
         showSymbol: false,
         yAxisIndex: 2,
         color: "#fe7800",
-        data: data.map((dt) => dt.degree_days),
+        data: data.map((dt: DataApi) => dt.degree_days),
       },
     ],
   };
 
   return (
-    <div
-      className="teste"
-      style={{
-        width: "100%",
-      }}
-    >
+    <div className="container-echarts">
       <ReactEcharts
         option={option}
-        style={{ height: "500px", padding: "5px" }}
+        style={{
+          height: "500px",
+          minWidth: "1000px",
+        }}
       />
     </div>
   );

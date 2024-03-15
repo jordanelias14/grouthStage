@@ -1,0 +1,6 @@
+.container-echarts {
+  width: 100vw;
+  height: 100%;
+  overflow: auto;
+  margin-top: 30px;
+}
